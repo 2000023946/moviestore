@@ -29,6 +29,7 @@ def remove(request, id):
     return redirect('home.index')	
 
 def index(request):
+    print('accessing cart')
     cart_total = 0
     movies_in_cart = []
     cart = request.session.get('cart', {})
@@ -42,7 +43,11 @@ def index(request):
     template_data['title'] = 'Cart'
     template_data['movies_in_cart'] = movies_in_cart
     template_data['cart_total'] = cart_total
-    template_data['wishList_items'] = getWishList(request.user).wishList.all()
+    if request.user.is_authenticated: 
+        template_data['wishList_items'] = getWishList(request.user).wishList.all()
+    else:
+        print('session wishLIst', request.session.get('wishList', []))
+        template_data['wishList_items'] = [Movie.objects.get(id=id) for id in request.session.get('wishList', [])]
 
     return render(request, 'cart/index.html',
         {'template_data': template_data})
