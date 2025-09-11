@@ -2,15 +2,31 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import get_object_or_404, redirect
-from movies.models import Movie
+from movies.models import Movie, WishList, WishListItem
 from .utils import calculate_cart_total
 
+from movies.views import getWishList
+
 def add(request, id):
+    print('adding multi')
     get_object_or_404(Movie, id=id)
     cart = request.session.get('cart', {})
-    cart[id] = request.POST['quantity']
+    print(cart)
+    if 'quantity' in request.POST:
+        cart[str(id)] = request.POST['quantity']
+    else :
+        cart[str(id)] = cart.get(str(id), 0) + 1
     request.session['cart'] = cart
-    return redirect('home.index')			
+    return redirect('home.index')		
+
+def remove(request, id):
+    print('deleting movie', id)
+    get_object_or_404(Movie, id=id)
+    cart = request.session.get('cart', {})
+    print('cart', cart)
+    del cart[str(id)]
+    request.session['cart'] = cart
+    return redirect('home.index')	
 
 def index(request):
     cart_total = 0
@@ -21,10 +37,13 @@ def index(request):
         movies_in_cart = Movie.objects.filter(id__in=movie_ids)
         cart_total = calculate_cart_total(cart,
             movies_in_cart)
+        
     template_data = {}
     template_data['title'] = 'Cart'
     template_data['movies_in_cart'] = movies_in_cart
     template_data['cart_total'] = cart_total
+    template_data['wishList_items'] = getWishList(request.user).wishList.all()
+
     return render(request, 'cart/index.html',
         {'template_data': template_data})
 
@@ -34,6 +53,8 @@ def add_to_cart(request, id):
     cart[id] = request.POST['quantity']
     request.session['cart'] = cart
     return redirect('cart.index')
+
+
 
 def clear(request):
     request.session['cart'] = {}
