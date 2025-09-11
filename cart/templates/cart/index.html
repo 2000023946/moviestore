@@ -77,15 +77,15 @@
         <ul class="list-group">
           {% for item in template_data.wishList_items %}
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ item.movie.name }}
+            {{ item.name }}
             <div>
               <!-- View Movie Button -->
-              <a href="{% url 'movies.show' id=item.movie.id %}" class="btn btn-sm btn-outline-primary me-2">
+              <a href="{% url 'movies.show' id=item.id %}" class="btn btn-sm btn-outline-primary me-2">
                 View Movie
               </a>
 
               <!-- Remove from WishList Form -->
-              <form method="post" action="{% url 'movies.removeWishList' movie_id=item.movie.id %}" style="display:inline;">
+              <form method="post" action="{% url 'movies.removeWishList' movie_id=item.id %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-danger">
                   Remove

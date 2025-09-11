@@ -48,7 +48,8 @@ def index(request):
     else:
         print('session wishLIst', request.session.get('wishList', []))
         template_data['wishList_items'] = [Movie.objects.get(id=id) for id in request.session.get('wishList', [])]
-
+        print('wishList objects sql', template_data['wishList_items'])
+        
     return render(request, 'cart/index.html',
         {'template_data': template_data})
 
