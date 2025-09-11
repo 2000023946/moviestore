@@ -33,6 +33,33 @@
           </div>
         </form>
 
+        {% if template_data.inCart %}
+        <!-- Remove Cart Form -->
+            <form method="post" action="{% url 'cart.remove' id=template_data.movie.id %}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-auto">
+                <button class="btn bg-dark text-white" type="submit">
+                  Remove From Cart
+                </button>
+              </div>
+            </div>
+          </form>
+      {% endif %}
+
+
+        <!-- Add to WishList Form -->
+        <form method="post" action="{% url 'movies.addWishList' movie_id=template_data.movie.id %}">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-auto">
+              <button class="btn bg-dark text-white" type="submit">
+                {{ template_data.wishList }} to Wish List
+              </button>
+            </div>
+          </div>
+        </form>
+
         <!-- Reviews Section -->
         <h2 class="mt-4">Reviews</h2>
         <hr>
@@ -42,22 +69,33 @@
               <h5 class="card-title">Review by {{ review.user.username }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ review.date }}</h6>
               <p class="card-text">{{ review.comment }}</p>
+              <p class="card-text">Votes: {{ review.votes }}</p>
 
-              {% if user.is_authenticated and user == review.user %}
-                <a class="btn btn-primary"
-                   href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">
-                  Edit
-                </a>
-                <a class="btn btn-danger"
-                   href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">
-                  Delete
-                </a>
+              <!-- Action buttons -->
+              {% if user.is_authenticated %}
+                {% if user == review.user %}
+                  <a class="btn btn-primary btn-sm"
+                    href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">
+                    Edit
+                  </a>
+                  <a class="btn btn-danger btn-sm"
+                    href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">
+                    Delete
+                  </a>
+                {% endif %}
+
+                <!-- Vote button -->
+                <form method="post" action="{% url 'movies.vote_review' review_id=review.id %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success btn-sm">Vote</button>
+                </form>
               {% endif %}
             </li>
           {% empty %}
             <li class="list-group-item py-3">No reviews yet.</li>
           {% endfor %}
         </ul>
+
 
         <!-- Create Review Form -->
         {% if user.is_authenticated %}

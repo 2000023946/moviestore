@@ -18,5 +18,21 @@ class Review(models.Model):
     movie = models.ForeignKey(Movie,
         on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    votes = models.IntegerField(default=0)
     def __str__(self):
         return str(self.id) + ' - ' + self.movie.name
+    
+class WishList(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishList')
+
+class WishListItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='wishList')
+    wishList = models.ForeignKey(WishList, on_delete=models.CASCADE, related_name='wishList', null=True)
+
+
+    def save(self, *args, **kwargs):
+        if WishListItem.objects.filter(movie=self.movie, wishList=self.wishList).exists():
+            return
+        super().save(*args, **kwargs)

@@ -8,4 +8,10 @@ urlpatterns = [
     path('<int:id>/review/<int:review_id>/edit/',views.edit_review, name='movies.edit_review'),
     path('<int:id>/review/<int:review_id>/delete/',
         views.delete_review, name='movies.delete_review'),
+    path('wishList/<int:movie_id>/add/',
+        views.addWishList, name='movies.addWishList'),
+    path('wishList/<int:movie_id>/remove/',
+        views.removeWishList, name='movies.removeWishList'),
+    path('vote_review/<int:review_id>',
+        views.vote_review, name='movies.vote_review'),
 ]
