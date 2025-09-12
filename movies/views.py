@@ -32,6 +32,11 @@ def vote_movie(request, id):
     movie.save()
     return redirect('movies.show', id=id)  # redirect back to movie page
 
+def vote_movie_down(request, id):
+    movie = get_object_or_404(Movie, id=id)
+    movie.de_vote()
+    return redirect('movies.show', id=id)  # redirect back to movie page
+
 
 def show(request, id):
     movie = get_object_or_404(Movie, id=id)

@@ -20,6 +20,13 @@
           </button>
         </form>
 
+        <form method="post" action="{% url 'movies.vote_movie_down' id=template_data.movie.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success btn-sm">
+            👎 Vote ({{ template_data.movie.votes }})
+          </button>
+        </form>
+
         <!-- Add to Cart Form -->
         <form method="post" action="{% url 'cart.add' id=template_data.movie.id %}">
           {% csrf_token %}

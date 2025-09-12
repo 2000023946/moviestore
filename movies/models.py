@@ -12,6 +12,10 @@ class Movie(models.Model):
     def __str__(self):
         return str(self.id) + ' - ' + self.name
     
+    def de_vote(self):
+        self.votes = max(self.votes-1, 0)
+        self.save()
+    
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
     comment = models.CharField(max_length=255)
