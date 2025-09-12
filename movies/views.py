@@ -9,12 +9,15 @@ def index(request):
     else:
         movies = Movie.objects.all()
 
+    print('user favs', request.session.get('favs', []))
+
     template_data = {
         'title': 'Movies',
         'movies': movies,
         'recently_viewed': [Movie.objects.get(id=id) for id in request.session.get('recently_viewed', [])],
         'reviews': Review.objects.order_by('-votes')[:5],
-        'most_voted': Movie.objects.order_by('-votes')[:5]
+        'most_voted': Movie.objects.order_by('-votes')[:5],
+        'favorites': [Movie.objects.get(id=id) for id in request.session.get('favorites', [])],
     }
 
     return render(request, 'movies/index.html', {'template_data': template_data})
@@ -25,6 +28,13 @@ def vote_review(request, review_id):
     review.votes += 1
     review.save()
     return redirect('movies.index')
+
+def addFavorite(request, id):
+    favs = request.session.get('favorites', [])
+    if id not in favs:
+        favs.append(id)
+    request.session['favorites'] = favs
+    return redirect('movies.show', id=id)  # redirect back to movie page
 
 def vote_movie(request, id):
     movie = get_object_or_404(Movie, id=id)

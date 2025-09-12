@@ -66,6 +66,44 @@
     </div>
 
 
+    <!-- ❤️ Favorite Movies Section -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <h3 class="mb-3">Your Favorite Movies</h3>
+        <hr>
+      </div>
+
+      {% if template_data.favorites %}
+        {% for movie in template_data.favorites %}
+          <div class="col-md-4 col-lg-3 mb-3">
+            <div class="card p-2 align-items-center pt-4 h-100">
+              <img src="{{ movie.image.url }}" class="card-img-top rounded img-card-200" alt="{{ movie.name }}">
+              <div class="card-body text-center d-flex justify-content-between align-items-center">
+                
+                <!-- Movie Name + View Details -->
+                <a href="{% url 'movies.show' id=movie.id %}" class="btn bg-dark text-white me-2 flex-grow-1">
+                  {{ movie.name }}
+                </a>
+
+                {% comment %} <!-- Small Remove from Favorites Button -->
+                <form method="post" action="{% url 'favorites.remove' id=movie.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                </form> {% endcomment %}
+
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <p class="text-muted">You have no favorite movies yet.</p>
+        </div>
+      {% endif %}
+    </div>
+
+
+
     <!-- 🔝 Most Voted Movies Section -->
     <div class="row mt-5">
       <div class="col-12">

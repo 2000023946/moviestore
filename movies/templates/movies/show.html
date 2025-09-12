@@ -12,18 +12,26 @@
         <hr>
         <p><b>Description:</b> {{ template_data.movie.description }}</p>
         <p><b>Price:</b> ${{ template_data.movie.price }}</p>
-
+        <!-- thumbs up -->
         <form method="post" action="{% url 'movies.vote_movie' id=template_data.movie.id %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn-success btn-sm">
             👍 Vote ({{ template_data.movie.votes }})
           </button>
         </form>
-
+        <!-- thumbs down -->
         <form method="post" action="{% url 'movies.vote_movie_down' id=template_data.movie.id %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn-success btn-sm">
             👎 Vote ({{ template_data.movie.votes }})
+          </button>
+        </form>
+
+        <!-- AFAV to button -->
+        <form method="post" action="{% url 'movies.addFavorite' id=template_data.movie.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success btn-sm">
+            Add to Favorite
           </button>
         </form>
 
