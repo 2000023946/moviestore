@@ -86,10 +86,10 @@
                 </a>
 
                 {% comment %} <!-- Small Remove from Favorites Button -->
-                <form method="post" action="{% url 'favorites.remove' id=movie.id %}">
+                <form method="post" action="{% url 'movies.removeFavorite' id=template_data.movie.id %}">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                </form> {% endcomment %}
+                  <button type="submit" class="btn btn-sm btn-danger">Remove From Favorite</button>
+                </form>  {% endcomment %}
 
                 <!-- Small Add to Cart Button -->
                 <form method="post" action="{% url 'cart.add' id=movie.id %}">

@@ -36,6 +36,13 @@ def addFavorite(request, id):
     request.session['favorites'] = favs
     return redirect('movies.show', id=id)  # redirect back to movie page
 
+def removeFavorite(request, id):
+    favs = request.session.get('favorites', [])
+    if id in favs:
+        favs.remove(id)
+    request.session['favorites'] = favs
+    return redirect('movies.index')  # redirect back to movie page
+
 def vote_movie(request, id):
     movie = get_object_or_404(Movie, id=id)
     movie.votes += 1
@@ -55,12 +62,14 @@ def show(request, id):
     exists = isWishListEmpty(request, movie)
     addToRecent(request, id)
 
+
     template_data = {
         'title': movie.name,
         'reviews': reviews,
         'movie': movie,
         'inCart': str(id) in request.session.get('cart', {}),
         'wishList': 'Remove' if exists else 'Add',
+        'inFavorite': id in request.session.get('favorites', [])
     }
 
     return render(request, 'movies/show.html', {'template_data': template_data})

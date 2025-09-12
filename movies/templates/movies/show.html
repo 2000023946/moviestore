@@ -27,13 +27,26 @@
           </button>
         </form>
 
-        <!-- AFAV to button -->
+
+
+        {% if template_data.inFavorite %}
+        <!-- Remove from Favorites Button -->
+        <form method="post" action="{% url 'movies.removeFavorite' id=template_data.movie.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-danger">
+            Remove From Favorite
+          </button>
+        </form>
+      {% else %}
+        <!-- Add to Favorites Button -->
         <form method="post" action="{% url 'movies.addFavorite' id=template_data.movie.id %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn-success btn-sm">
             Add to Favorite
           </button>
         </form>
+      {% endif %}
+
 
         <!-- Add to Cart Form -->
         <form method="post" action="{% url 'cart.add' id=template_data.movie.id %}">
