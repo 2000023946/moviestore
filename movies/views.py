@@ -9,8 +9,6 @@ def index(request):
     else:
         movies = Movie.objects.all()
 
-    print('user favs', request.session.get('favs', []))
-
     template_data = {
         'title': 'Movies',
         'movies': movies,
@@ -61,6 +59,7 @@ def show(request, id):
 
     exists = isWishListEmpty(request, movie)
     addToRecent(request, id)
+    print('added to recents', request.session.get('recently_viewed'))
 
 
     template_data = {
@@ -140,6 +139,18 @@ def getWishList(request):
     if not wishList:
         wishList = WishList.objects.create(user=user)
     return wishList
+
+def convertSesionWishListToModel(request):
+    sessionList = request.session.get('wishList', {})
+    if len(sessionList) > 0:
+        wishList = getWishList(request)
+        print('user', wishList)
+        for movie_id in sessionList:
+            movie = Movie.objects.get(id=movie_id)
+            WishListItem.objects.create(movie=movie, wishList=wishList)
+            print('created new wishLiust item')
+        del request.session['wishList']
+        
 
 
 def isWishListEmpty(request, movie):

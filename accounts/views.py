@@ -3,6 +3,9 @@ from .forms import CustomUserCreationForm, CustomErrorList
 from django.shortcuts import redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+
+from movies.views import convertSesionWishListToModel
+
 @login_required
 def logout(request):
     auth_logout(request)
@@ -39,11 +42,13 @@ def login(request):
             password = request.POST['password']
         )
         if user is None:
+
             template_data['error'] ='The username or password is incorrect.'
             return render(request, 'accounts/login.html',
                 {'template_data': template_data})
         else:
             auth_login(request, user)
+            convertSesionWishListToModel(request)
             return redirect('home.index')
         
 from django.contrib.auth.models import User

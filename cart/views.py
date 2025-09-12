@@ -43,8 +43,11 @@ def index(request):
     template_data['title'] = 'Cart'
     template_data['movies_in_cart'] = movies_in_cart
     template_data['cart_total'] = cart_total
+
     if request.user.is_authenticated: 
-        template_data['wishList_items'] = getWishList(request.user).wishList.all()
+        print('getting auth user iwshList', [item.movie for item in getWishList(request).wishList.all()])
+        template_data['wishList_items'] = [item.movie for item in getWishList(request).wishList.all()]
+
     else:
         print('session wishLIst', request.session.get('wishList', []))
         template_data['wishList_items'] = [Movie.objects.get(id=id) for id in request.session.get('wishList', [])]

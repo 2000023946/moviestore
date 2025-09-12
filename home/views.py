@@ -3,6 +3,7 @@ from django.shortcuts import render #type: ignore
 def index(request):
     template_data = {}
     template_data['title'] = 'Movies Store'
+
     return render(request, 'home/index.html', {
         'template_data': template_data})
 
