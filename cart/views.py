@@ -13,9 +13,9 @@ def add(request, id):
     cart = request.session.get('cart', {})
     print(cart)
     if 'quantity' in request.POST:
-        cart[str(id)] = request.POST['quantity']
+        cart[str(id)] = str(int(request.POST['quantity']) + int(cart[str(id)]))
     else :
-        cart[str(id)] = cart.get(str(id), 0) + 1
+        cart[str(id)] = str(int(cart.get(str(id), 0)) + 1)
     request.session['cart'] = cart
     return redirect('home.index')		
 
