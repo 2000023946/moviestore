@@ -14,4 +14,5 @@ urlpatterns = [
         views.removeWishList, name='movies.removeWishList'),
     path('vote_review/<int:review_id>',
         views.vote_review, name='movies.vote_review'),
+    path('<int:id>/vote/', views.vote_movie, name='movies.vote_movie'),
 ]
