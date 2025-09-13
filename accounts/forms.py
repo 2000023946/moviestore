@@ -7,6 +7,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import validate_password
+
 
 
 class CustomErrorList(ErrorList):
@@ -50,11 +52,16 @@ class CustomPasswordResetForm(forms.Form):
         if not User.objects.filter(username=username).exists():
             raise ValidationError("This username does not exist.")
         return username
+    
+    def clean_password(self, number):
+        password1 = self.cleaned_data.get(f'password{number}')
+        validate_password(password1)  # ensures same rules as UserCreationForm
+        return password1
 
     def clean(self):
         cleaned_data = super().clean()
-        password1 = cleaned_data.get("password1")
-        password2 = cleaned_data.get("password2")
+        password1 = self.clean_password(1)
+        password2 = self.clean_password(2)
 
         if password1 and password2 and password1 != password2:
             raise ValidationError("Passwords do not match.")
