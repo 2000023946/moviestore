@@ -9,6 +9,8 @@ class Movie(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='movie_images/')
     votes = models.IntegerField(default=0)
+    genre = models.CharField(max_length=255, null=True)
+    
     def __str__(self):
         return str(self.id) + ' - ' + self.name
     
