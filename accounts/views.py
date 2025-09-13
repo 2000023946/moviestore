@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import CustomUserCreationForm, CustomErrorList
+from .forms import CustomUserCreationForm, CustomErrorList, CustomPasswordResetForm
 from django.shortcuts import redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -59,3 +59,20 @@ def orders(request):
     template_data['orders'] = request.user.order_set.all()
     return render(request, 'accounts/orders.html',
         {'template_data': template_data})
+
+def password_reset(request):
+    template_data = {}
+    template_data['title'] = 'Reset Password'
+    if request.method == 'GET':
+        template_data['form'] = CustomPasswordResetForm()
+        return render(request, 'accounts/password_reset.html',
+            {'template_data': template_data})
+    elif request.method == 'POST':
+        form = CustomPasswordResetForm(request.POST, error_class=CustomErrorList)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts.login')
+        else:
+            template_data['form'] = form
+            return render(request, 'accounts/password_reset.html',
+                {'template_data': template_data})
