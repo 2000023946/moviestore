@@ -4,8 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 
-
 def index(request):
+
+    sort = request.GET.get('sort', '')
     search_term = request.GET.get('search', '')
 
     if search_term:
@@ -13,6 +14,9 @@ def index(request):
             Q(name__icontains=search_term) |
             Q(genre__icontains=search_term)
         )
+    elif sort:
+        movies = Movie.objects.order_by(sort)
+        print(movies)
     else:
         movies = Movie.objects.all()
 
@@ -23,9 +27,21 @@ def index(request):
         'reviews': Review.objects.order_by('-votes')[:5],
         'most_voted': Movie.objects.order_by('-votes')[:5],
         'favorites': [Movie.objects.get(id=id) for id in request.session.get('favorites', [])],
+        'sort_options': get_sort_options()
     }
 
     return render(request, 'movies/index.html', {'template_data': template_data})
+
+def get_sort_options():
+    allowed_fields = ['name', 'price', 'votes', 'genre']  
+
+    sort_options = []
+    for f in allowed_fields:
+        sort_options.append((f, f"Ascending by {f.capitalize()}"))
+        sort_options.append((f"-{f}", f"Descending by {f.capitalize()}"))
+
+    return sort_options
+
 
 
 def vote_review(request, review_id):
