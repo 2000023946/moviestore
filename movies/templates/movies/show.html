@@ -105,7 +105,10 @@
         {% endif %}
 
         <!-- Reviews Section -->
-        <h2 class="mt-4">Reviews</h2>
+        <h2 class="mt-4 d-flex justify-content-between align-items-center">
+          <span>Reviews</span>
+          <span>Stars: {{ template_data.stars|floatformat:1 }}</span>
+        </h2>
         <hr>
         <ul class="list-group">
           {% for review in template_data.reviews %}
@@ -113,6 +116,7 @@
               <h5 class="card-title">Review by {{ review.user.username }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ review.date }}</h6>
               <p class="card-text">{{ review.comment }}</p>
+              <p class="card-text">Stars: {{ review.stars }}</p>
               <p class="card-text">Votes: {{ review.votes }}</p>
 
               <!-- Action buttons -->
@@ -154,9 +158,32 @@
                     <label for="comment" class="form-label">Comment:</label>
                     <textarea name="comment" id="comment" class="form-control" required></textarea>
                   </div>
+
+                  <!-- Star rating -->
+                  <div class="mb-3">
+                    <label class="form-label d-block">Rating:</label>
+                    <div class="d-flex gap-3">
+                      {% for i in "12345" %}
+                        <div class="form-check">
+                          <input 
+                            class="form-check-input" 
+                            type="radio" 
+                            name="stars" 
+                            id="rating{{ i }}" 
+                            value="{{ i }}" 
+                            required>
+                          <label class="form-check-label" for="rating{{ i }}">
+                            {{ i }} ★
+                          </label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+
                   <div class="text-center">
                     <button type="submit" class="btn bg-dark text-white">Add Review</button>
                   </div>
+
                 </form>
 
               </div>

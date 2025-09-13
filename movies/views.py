@@ -91,7 +91,8 @@ def show(request, id):
         'movie': movie,
         'inCart': str(id) in request.session.get('cart', {}),
         'wishList': 'Remove' if exists else 'Add',
-        'inFavorite': id in request.session.get('favorites', [])
+        'inFavorite': id in request.session.get('favorites', []),
+        'stars': movie.avg_stars()
     }
 
     return render(request, 'movies/show.html', {'template_data': template_data})
@@ -113,7 +114,7 @@ def addToRecent(request, id):
 def create_review(request, id):
     if request.method == 'POST' and request.POST['comment'] != '':
         movie = get_object_or_404(Movie, id=id)
-        review = Review(comment=request.POST['comment'], movie=movie, user=request.user)
+        review = Review(comment=request.POST['comment'], movie=movie, user=request.user, stars=request.POST['stars'])
         review.save()
     return redirect('movies.show', id=id)
 
