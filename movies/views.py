@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review, WishList, WishListItem, UserReviewHeart
+from .models import Movie, Review, WishList, WishListItem, UserReviewHeart, ReviewComment
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
@@ -42,6 +42,15 @@ def get_sort_options():
 
     return sort_options
 
+@login_required
+def comment_review(request, id, review_id):
+    review = Review.objects.get(id=review_id)
+    if request.method == 'GET':
+        template_data = {'title': 'Edit Review', 'review': review}
+        return render(request, 'movies/comment_review.html', {'template_data': template_data})
+    elif request.method == 'POST' and request.POST['comment'] != '':
+        ReviewComment.objects.create(user=request.user, comment=request.POST.get('comment'), review=review)
+    return redirect('movies.show', id=id)
 
 
 def vote_review(request, review_id):
@@ -102,12 +111,13 @@ def show(request, id):
 def get_reviews(reviews, request):
 
     if not request.user.is_authenticated:
-        return [(False, review) for i, review in enumerate(reviews)]
+        return [(False, [], review) for i, review in enumerate(reviews)]
     full_reviews = []
 
     for i, review in enumerate(reviews):
         userHeart = getOrCreateUserHeart(request, review)
-        full_reviews.append((userHeart.heart, review))
+        review_comments = list(ReviewComment.objects.filter(review=review))
+        full_reviews.append((userHeart.heart, review_comments, review))
 
     return full_reviews
 

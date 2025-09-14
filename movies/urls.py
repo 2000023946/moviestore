@@ -19,4 +19,5 @@ urlpatterns = [
     path('<int:id>/addFavorite/', views.addFavorite, name='movies.addFavorite'),
     path('<int:id>/removeFavorite/', views.removeFavorite, name='movies.removeFavorite'),
     path('<int:review_id>/like_review/', views.like_review, name='movies.like_review'),
+    path('<int:id>/review/<int:review_id>/comment_review/',views.comment_review, name='movies.comment_review'),
 ]

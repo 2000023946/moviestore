@@ -111,13 +111,19 @@
         </h2>
         <hr>
         <ul class="list-group">
-          {% for user_heart, review in template_data.reviews %}
+          {% for user_heart, review_comments, review in template_data.reviews %}
             <li class="list-group-item py-3">
               <h5 class="card-title">Review by {{ review.user.username }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ review.date }}</h6>
               <p class="card-text">{{ review.comment }}</p>
               <p class="card-text">Stars: {{ review.stars }}</p>
               <p class="card-text">Votes: {{ review.votes }}</p>
+
+              <h6 class="card-subtitle mb-2 text-muted">Comments</h6>
+              {% for review_comment in review_comments %}
+                <p class="card-title">Comment by {{ review_comment.user.username }}</p>
+                <p class="card-subtitle mb-2 text-muted">{{ review_comment.comment }}</p>
+              {% endfor %}
 
               <!-- Action buttons -->
               {% if user.is_authenticated %}
@@ -129,6 +135,10 @@
                   <a class="btn btn-danger btn-sm"
                     href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">
                     Delete
+                  </a>
+                  <a class="btn btn-danger btn-sm"
+                    href="{% url 'movies.comment_review' id=template_data.movie.id review_id=review.id %}">
+                    Comment 
                   </a>
                 {% endif %}
 
@@ -148,6 +158,8 @@
                     <span class="heart"></span>
                   </label>
                 </form>
+
+
                 
               {% endif %}
             </li>

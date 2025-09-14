@@ -39,6 +39,11 @@ class Review(models.Model):
     def __str__(self):
         return str(self.id) + ' - ' + self.movie.name
     
+class ReviewComment(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='subcomment')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subcomment')
+    comment = models.CharField(max_length=255)
+    
 class UserReviewHeart(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='heart')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='heart')
