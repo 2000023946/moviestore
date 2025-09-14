@@ -111,7 +111,7 @@
         </h2>
         <hr>
         <ul class="list-group">
-          {% for review in template_data.reviews %}
+          {% for user_heart, review in template_data.reviews %}
             <li class="list-group-item py-3">
               <h5 class="card-title">Review by {{ review.user.username }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ review.date }}</h6>
@@ -137,6 +137,18 @@
                   {% csrf_token %}
                   <button type="submit" class="btn btn-success btn-sm">Vote</button>
                 </form>
+
+                <!-- Heart (like) checkbox -->
+                <form method="post" action="{% url 'movies.like_review' review_id=review.id %}" style="display:inline;">
+                  {% csrf_token %}
+                  <label class="heart-container">
+                    Heart:
+                    <input type="checkbox" name="liked" onchange="this.form.submit()"
+                          {% if user_heart %}checked{% endif %}>
+                    <span class="heart"></span>
+                  </label>
+                </form>
+                
               {% endif %}
             </li>
           {% empty %}

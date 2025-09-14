@@ -35,8 +35,14 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     votes = models.IntegerField(default=0)
     stars = models.IntegerField(default=0)
+
     def __str__(self):
         return str(self.id) + ' - ' + self.movie.name
+    
+class UserReviewHeart(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='heart')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='heart')
+    heart = models.BooleanField(default=False)
     
 class WishList(models.Model):
     id = models.AutoField(primary_key=True)

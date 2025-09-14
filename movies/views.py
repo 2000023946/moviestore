@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review, WishList, WishListItem
+from .models import Movie, Review, WishList, WishListItem, UserReviewHeart
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
@@ -84,6 +84,13 @@ def show(request, id):
     addToRecent(request, id)
     print('added to recents', request.session.get('recently_viewed'))
 
+    full_reviews = []
+
+    for i, review in enumerate(reviews):
+        userHeart = getOrCreateUserHeart(request, review)
+        full_reviews.append((userHeart.heart, review))
+
+    reviews = full_reviews
 
     template_data = {
         'title': movie.name,
@@ -92,10 +99,35 @@ def show(request, id):
         'inCart': str(id) in request.session.get('cart', {}),
         'wishList': 'Remove' if exists else 'Add',
         'inFavorite': id in request.session.get('favorites', []),
-        'stars': movie.avg_stars()
+        'stars': movie.avg_stars(),
     }
 
     return render(request, 'movies/show.html', {'template_data': template_data})
+
+
+def getOrCreateUserHeart(request, review): 
+    if UserReviewHeart.objects.filter(user=request.user, review=review).exists():
+        userHeart = UserReviewHeart.objects.get(user=request.user, review=review)
+    else:
+        userHeart = UserReviewHeart.objects.create(user=request.user, review=review)
+
+    return userHeart
+
+@login_required
+def like_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    # Checkbox sends 'on' if checked, nothing if unchecked
+    liked = 'liked' in request.POST  
+
+    userHeart = getOrCreateUserHeart(request, review)
+
+    userHeart.heart = liked
+
+    userHeart.save()
+
+    # redirect back to the movie detail page
+    return redirect('movies.show', id=review.movie.id)
 
 
 def addToRecent(request, id):
