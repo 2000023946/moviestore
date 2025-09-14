@@ -84,13 +84,8 @@ def show(request, id):
     addToRecent(request, id)
     print('added to recents', request.session.get('recently_viewed'))
 
-    full_reviews = []
+    reviews = get_reviews(reviews)
 
-    for i, review in enumerate(reviews):
-        userHeart = getOrCreateUserHeart(request, review)
-        full_reviews.append((userHeart.heart, review))
-
-    reviews = full_reviews
 
     template_data = {
         'title': movie.name,
@@ -103,6 +98,17 @@ def show(request, id):
     }
 
     return render(request, 'movies/show.html', {'template_data': template_data})
+
+def get_reviews(reviews, request):
+    if not request.user.is_authenticated:
+        return reviews
+    full_reviews = []
+
+    for i, review in enumerate(reviews):
+        userHeart = getOrCreateUserHeart(request, review)
+        full_reviews.append((userHeart.heart, review))
+
+    return full_reviews
 
 
 def getOrCreateUserHeart(request, review): 
