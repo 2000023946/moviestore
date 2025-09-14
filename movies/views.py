@@ -84,7 +84,7 @@ def show(request, id):
     addToRecent(request, id)
     print('added to recents', request.session.get('recently_viewed'))
 
-    reviews = get_reviews(reviews)
+    reviews = get_reviews(reviews, request)
 
 
     template_data = {
