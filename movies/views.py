@@ -102,7 +102,7 @@ def show(request, id):
 def get_reviews(reviews, request):
 
     if not request.user.is_authenticated:
-        return [(False, review) for review in enumerate(reviews)]
+        return [(False, review) for i, review in enumerate(reviews)]
     full_reviews = []
 
     for i, review in enumerate(reviews):
