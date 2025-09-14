@@ -100,8 +100,9 @@ def show(request, id):
     return render(request, 'movies/show.html', {'template_data': template_data})
 
 def get_reviews(reviews, request):
+
     if not request.user.is_authenticated:
-        return reviews
+        return [(False, review) for review in enumerate(reviews)]
     full_reviews = []
 
     for i, review in enumerate(reviews):
