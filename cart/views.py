@@ -31,14 +31,34 @@ def add(request, id):
     request.session['cart'] = cart  # Save back to session
     return redirect('home.index')
 
+from django.shortcuts import get_object_or_404, redirect
+
 def remove(request, id):
     print('deleting movie', id)
-    get_object_or_404(Movie, id=id)
+    movie = get_object_or_404(Movie, id=id)  # Ensure movie exists
     cart = request.session.get('cart', {})
     print('cart', cart)
-    del cart[str(id)]
+
+    item_key = str(id)
+    current_quantity = int(cart.get(item_key, 0))
+
+    if 'quantity' in request.POST:
+        try:
+            remove_quant = int(request.POST['quantity'])
+        except ValueError:
+            remove_quant = 1  # fallback if invalid input
+        new_quantity = max(current_quantity - remove_quant, 0)
+        if new_quantity > 0:
+            cart[item_key] = new_quantity
+        else:
+            cart.pop(item_key, None)  # safely remove if 0
+    else:
+        # Remove the item completely, safely
+        cart.pop(item_key, None)
+
     request.session['cart'] = cart
-    return redirect('home.index')	
+    return redirect('home.index')
+
 
 def index(request):
     print('accessing cart')

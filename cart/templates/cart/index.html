@@ -33,9 +33,55 @@
               <td>${{ movie.price }}</td>
               <td>
                 {{ request.session.cart|get_quantity:movie.id }}
-                <form method="post" action="{% url 'cart.remove' id=movie.id %}" style="display:inline;">
+                <!-- REmove to Cart Form -->
+                <form method="post" action="{% url 'cart.remove' id=movie.id %}">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-sm btn-danger ms-1">×</button>
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="input-group col-auto">
+                        <div class="input-group-text">Quantity</div>
+                        <input type="number" min="1" max="10"
+                              class="form-control quantity-input"
+                              name="quantity" value="1">
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn bg-dark text-white" type="submit">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                <!-- ADD to Cart Form -->
+                <form method="post" action="{% url 'cart.add' id=movie.id %}">
+                  {% csrf_token %}
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="input-group col-auto">
+                        <div class="input-group-text">Quantity</div>
+                        <input type="number" min="1" max="10"
+                              class="form-control quantity-input"
+                              name="quantity" value="1">
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn bg-dark text-white" type="submit">
+                        ADD
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                <!-- RemoveAll to Cart Form -->
+                <form method="post" action="{% url 'cart.remove' id=movie.id %}">
+                  {% csrf_token %}
+                  <div class="row">
+                      <!-- You can add other content here if needed -->
+              
+                      <!-- Remove All Button -->
+                      <button type="submit" class="btn btn-danger">
+                          Remove All
+                      </button>
+                  </div>
                 </form>
               </td>
             </tr>
