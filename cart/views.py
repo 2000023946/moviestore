@@ -7,17 +7,29 @@ from .utils import calculate_cart_total
 
 from movies.views import getWishList
 
+from django.shortcuts import get_object_or_404, redirect
+
 def add(request, id):
     print('adding multi')
-    get_object_or_404(Movie, id=id)
-    cart = request.session.get('cart', {})
+    movie = get_object_or_404(Movie, id=id)  # Ensure movie exists
+    cart = request.session.get('cart', {})  # Get existing cart or empty dict
     print(cart)
+
+    current_quantity = int(cart.get(str(id), 0))  # Existing quantity or 0
+
     if 'quantity' in request.POST:
-        cart[str(id)] = str(int(request.POST['quantity']) + int(cart[str(id)]))
-    else :
-        cart[str(id)] = str(int(cart.get(str(id), 0)) + 1)
-    request.session['cart'] = cart
-    return redirect('home.index')		
+        # Add the posted quantity to current quantity
+        try:
+            added_quantity = int(request.POST['quantity'])
+        except ValueError:
+            added_quantity = 1  # fallback if invalid input
+        cart[str(id)] = current_quantity + added_quantity
+    else:
+        # Add 1 if no quantity specified
+        cart[str(id)] = current_quantity + 1
+
+    request.session['cart'] = cart  # Save back to session
+    return redirect('home.index')
 
 def remove(request, id):
     print('deleting movie', id)
