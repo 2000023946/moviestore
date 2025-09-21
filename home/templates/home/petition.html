@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="masthead bg-index text-white text-center py-4">
+  <div class="container d-flex align-items-center flex-column pt-2">
+    <h2>Movies Store</h2>
+    <p>Your Ticket to Unlimited Entertainment!</p>
+  </div>
+</header>
+
+<div class="p-3">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col mx-auto text-center mb-3">
+        <h4>Welcome to the best movie store!!</h4>
+      </div>
+    </div>
+
+    <!-- Subscription section -->
+    <div class="row mt-4">
+      <div class="col-md-6 mx-auto text-center">
+        <h5>Petitions</h5>
+        <form action="{% url 'home.petition' %}" method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter petition name">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+      {% for petition in template_data.petitions %}
+        <div class="col-md-6 mb-3">
+          <div class="card shadow-sm text-center">
+            <div class="card-body">
+              <h5 class="card-title">{{ petition.name }}</h5>
+              <p class="card-text">
+                Votes: <span class="fw-bold">{{ petition.votes }}</span>
+              </p>
+              {% if request.user.is_authenticated %}
+                <form action="{% url 'home.vote_petition' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ petition.name }}">
+                    <button type="submit" class="btn btn-success">Vote</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted text-center">No petitions yet. Be the first to create one!</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
